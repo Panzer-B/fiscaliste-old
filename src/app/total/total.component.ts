@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { select, Store } from "@ngrx/store";
-import { selectPerson, selectPersonIncome } from "../store/calculator.selector";
+import { selectPerson, selectPersonIncome } from "../store/person.selector";
 import { AppState } from "../store/reducers";
 
 @Component({
@@ -15,13 +15,6 @@ export class TotalComponent implements OnInit {
     constructor(
         private _store: Store<AppState>
     ) {
-        this._store.pipe(
-            select(selectPerson)
-        ).subscribe((value) => {
-            console.log('selectPersonIncome : ', value);
-            this.total = value;
-        });
-
         this._store.pipe(
             select(selectPersonIncome)
         ).subscribe((value) => {

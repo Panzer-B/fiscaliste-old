@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { SetIncome } from "../store/calculator.action";
+import { SetIncome } from "../store/person.action";
 import { AppState } from "../store/reducers";
 
 @Component({
