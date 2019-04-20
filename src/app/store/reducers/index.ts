@@ -1,19 +1,21 @@
 import {
-  ActionReducer,
-  ActionReducerMap,
-  createFeatureSelector,
-  createSelector,
-  MetaReducer
+    ActionReducer,
+    ActionReducerMap,
+    createFeatureSelector,
+    createSelector,
+    MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../../environments/environment';
+import { calculatorReducer } from "../calculator.reducer";
+import { PersonState } from "../calculator.selector";
 
-export interface State {
-
+export interface AppState {
+    person: PersonState
 }
 
-export const reducers: ActionReducerMap<State> = {
-
+export const reducers: ActionReducerMap<AppState> = {
+    person: calculatorReducer
 };
 
 
-export const metaReducers: MetaReducer<State>[] = !environment.production ? [] : [];
+export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];

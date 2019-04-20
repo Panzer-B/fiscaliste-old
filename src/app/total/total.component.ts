@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import { select, Store } from "@ngrx/store";
+import { selectPerson, selectPersonIncome } from "../store/calculator.selector";
+import { AppState } from "../store/reducers";
 
 @Component({
     selector: 'app-total',
@@ -8,8 +11,23 @@ import {Component, OnInit} from '@angular/core';
 export class TotalComponent implements OnInit {
 
     total:number;
-    constructor() {
-        this.total = 10;
+
+    constructor(
+        private _store: Store<AppState>
+    ) {
+        this._store.pipe(
+            select(selectPerson)
+        ).subscribe((value) => {
+            console.log('selectPersonIncome : ', value);
+            this.total = value;
+        });
+
+        this._store.pipe(
+            select(selectPersonIncome)
+        ).subscribe((value) => {
+            console.log('selectPersonIncome : ', value);
+            this.total = value;
+        });
     }
 
     ngOnInit() {
