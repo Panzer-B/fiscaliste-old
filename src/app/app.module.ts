@@ -7,11 +7,13 @@ import {StoreModule} from '@ngrx/store';
 import {reducers, metaReducers} from './reducers';
 import {RevenuComponent} from './revenu/revenu.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import { TotalComponent } from './total/total.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        RevenuComponent
+        RevenuComponent,
+        TotalComponent
     ],
     imports: [
         BrowserModule,
