@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { SetIncome } from "../store/person.action";
+import { SetGrossIncome, SetIncome } from "../store/person.action";
 import { AppState } from "../store/reducers";
 
 @Component({
@@ -28,7 +28,7 @@ export class RevenuComponent implements OnInit {
 
     private addEvents() {
         this.revenuControl.valueChanges.subscribe((value) => {
-            this._store.dispatch(new SetIncome({grossIncome: value}));
+            this._store.dispatch(new SetGrossIncome({grossIncome: value}));
         });
     }
 
