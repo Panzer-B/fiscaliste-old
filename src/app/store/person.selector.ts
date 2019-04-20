@@ -5,9 +5,9 @@ import { PersonState } from "./person.state";
 export const selectPerson = (state: AppState) => {
     return state.person;
 };
-export const selectPersonGrossIncome = createSelector(
+export const selectPersonNetIncome = createSelector(
     selectPerson,
     (state: PersonState) => {
-        return state.grossIncome
+        return state.netIncome
     }
 );
