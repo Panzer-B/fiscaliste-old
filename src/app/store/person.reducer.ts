@@ -1,8 +1,8 @@
 import { ActionsUnion, ActionTypes } from "./person.action";
-import { PersonState } from "./person.selector";
+import { PersonState } from "./person.state";
 
 export const initialState: PersonState = {
-    income: 0
+    grossIncome: 0
 };
 
 export function personReducer(state = initialState, action: ActionsUnion) {

@@ -6,7 +6,7 @@ export enum ActionTypes {
 
 export class SetIncome implements Action {
     readonly type = ActionTypes.SET_INCOME;
-    constructor(public payload: { income: number }) {}
+    constructor(public payload: { grossIncome: number }) {}
 }
 
 export type ActionsUnion = SetIncome;

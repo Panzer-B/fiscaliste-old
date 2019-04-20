@@ -29,7 +29,7 @@ export class RevenuComponent implements OnInit {
     private addEvents() {
         this.revenuControl.valueChanges.subscribe((value) => {
             console.log('valueChanges : ', value);
-            this._store.dispatch(new SetIncome({income: value}));
+            this._store.dispatch(new SetIncome({grossIncome: value}));
         });
     }
 
