@@ -3,7 +3,9 @@ import { TaxesCaQC } from "../../data/taxes_ca_qc";
 
 export const calculateTaxes = (income: number): number => {
     let total = 0;
+    // Federal
     total += calculateSpecificTableTax(income, TaxesCaQC);
+    // Provincial
     total += calculateSpecificTableTax(income, TaxesQC);
     return Math.round((income - total)*100)/100;
 };
