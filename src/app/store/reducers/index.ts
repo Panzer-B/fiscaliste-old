@@ -4,7 +4,7 @@ import {
 } from '@ngrx/store';
 import { environment } from '../../../environments/environment';
 import { personReducer } from "../person.reducer";
-import { PersonState } from "../person.selector";
+import { PersonState } from "../person.state";
 
 export interface AppState {
     person: PersonState

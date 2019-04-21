@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { SetGrossIncome, SetIncome } from "../store/person.action";
+import { SetGrossIncome } from "../store/person.action";
 import { AppState } from "../store/reducers";
+import { debounceTime } from "rxjs/internal/operators";
+import { DebounceTime } from "../app.config";
 
 @Component({
     selector: 'app-revenu',
@@ -27,9 +29,14 @@ export class RevenuComponent implements OnInit {
     }
 
     private addEvents() {
-        this.revenuControl.valueChanges.subscribe((value) => {
-            this._store.dispatch(new SetGrossIncome({grossIncome: value}));
-        });
+        this.revenuControl.valueChanges
+            .pipe(
+                debounceTime(DebounceTime)
+            )
+            .subscribe((value) => {
+                const valueNum = parseInt(value, 10);
+                this._store.dispatch(new SetGrossIncome({grossIncome: valueNum}));
+            });
     }
 
     ngOnInit() {

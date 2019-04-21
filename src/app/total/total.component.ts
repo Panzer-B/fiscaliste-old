@@ -18,7 +18,6 @@ export class TotalComponent implements OnInit {
         this._store.pipe(
             select(selectPersonNetIncome)
         ).subscribe((value) => {
-            console.log('selectPersonIncome : ', value);
             this.total = value;
         });
     }
