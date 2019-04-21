@@ -5,7 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {StoreModule} from '@ngrx/store';
 import {reducers, metaReducers} from './store/reducers';
-import {RevenuComponent} from './revenu/revenu.component';
+import {RevenuComponent} from './income/income.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { TotalComponent } from './total/total.component';
 

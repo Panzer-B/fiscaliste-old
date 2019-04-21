@@ -7,11 +7,11 @@ import { debounceTime } from "rxjs/internal/operators";
 import { DebounceTime } from "../app.config";
 
 @Component({
-    selector: 'app-revenu',
-    templateUrl: './revenu.component.html',
-    styleUrls: ['./revenu.component.scss']
+    selector: 'app-income',
+    templateUrl: './income.component.html',
+    styleUrls: ['./income.component.scss']
 })
-export class RevenuComponent implements OnInit {
+export class IncomeComponent implements OnInit {
 
     form: FormGroup;
     revenuControl: FormControl;
