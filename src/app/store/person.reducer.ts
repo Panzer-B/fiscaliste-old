@@ -9,9 +9,9 @@ export const initialState: PersonState = {
 export function personReducer(state = initialState, action: ActionsUnion) {
     switch (action.type) {
         case ActionTypes.SET_GROSS_INCOME:
-            return Object.assign({}, state, action.payload);
+            return Object.assign({}, {...state}, action.payload);
         case ActionTypes.SET_NET_INCOME:
-            return Object.assign({}, state, action.payload);
+            return Object.assign({}, {...state}, action.payload);
         default:
             return state;
     }
