@@ -9,6 +9,8 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { IncomeCompanyComponent } from './income-company/income-company.component';
 import { TotalNetComponent } from './total-net/total-net.component';
 import { IncomeJobComponent } from './income-job/income-job.component';
+import { CalculatorService } from "./core/services/calculator.service";
+import { YearTabsComponent } from './year-tabs/year-tabs.component';
 
 @NgModule({
     declarations: [
@@ -16,7 +18,8 @@ import { IncomeJobComponent } from './income-job/income-job.component';
         IncomeComponent,
         IncomeCompanyComponent,
         TotalNetComponent,
-        IncomeJobComponent
+        IncomeJobComponent,
+        YearTabsComponent
     ],
     imports: [
         BrowserModule,
@@ -28,4 +31,8 @@ import { IncomeJobComponent } from './income-job/income-job.component';
     bootstrap: [AppComponent]
 })
 export class AppModule {
+    constructor(
+        private _calculatorService: CalculatorService
+    ) {
+    }
 }

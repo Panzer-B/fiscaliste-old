@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from "@ngrx/store";
-import { AppState } from "./store/reducers";
-import { selectPersonGrossIncome } from "./store/person.selector";
-import { SetNetIncome } from "./store/person.action";
-import { calculateTaxes } from "./core/taxes/income.calculator";
+import { AppState } from "../../store/reducers";
+import { selectPersonGrossIncome } from "../../store/person.selector";
+import { SetNetIncome } from "../../store/person.action";
+import { calculateTaxes } from "../taxes/income.calculator";
 
 @Injectable({
     providedIn: 'root'
