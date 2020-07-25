@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { AppState } from "../store/reducers";
+import { AppState } from "../../store/reducers";
 
 @Component({
     selector: 'app-income',
