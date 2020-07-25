@@ -1,0 +1,13 @@
+<p>The true cost of things.</p>
+<form [formGroup]="formGroup">
+    <label>How much does it cost ?</label>
+    <input [formControlName]="'costControl'" type="number">
+    <br>
+    <label>I make <input [formControlName]="'hourlyRateControl'" type="number">$ an hour</label>
+    <label>and I work <input [formControlName]="'numberOfHoursControl'" type="number">hours a week.</label>
+
+    <br>
+    <label>The amount of time you need to spend at work is :</label>
+    {{result}} hours
+
+</form>
