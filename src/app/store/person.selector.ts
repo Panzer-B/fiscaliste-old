@@ -5,6 +5,7 @@ import { PersonState } from "./person.state";
 export const selectPerson = (state: AppState) => {
     return state.person;
 };
+
 export const selectPersonGrossIncome = createSelector(
     selectPerson,
     (state: PersonState) => {

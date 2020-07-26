@@ -1,6 +1,6 @@
 export interface PersonState {
-    grossIncome: number;
-    netIncome: number;
+    grossIncome?: number;
+    netIncome?: number;
     hourlyRate?: number
     weeklyHours?: number;
 }
