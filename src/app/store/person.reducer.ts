@@ -12,6 +12,10 @@ export function personReducer(state = initialState, action: ActionsUnion) {
             return Object.assign({}, {...state}, action.payload);
         case ActionTypes.SET_NET_INCOME:
             return Object.assign({}, {...state}, action.payload);
+        case ActionTypes.SET_HOURLY_RATE:
+            return Object.assign({}, {...state}, action.payload);
+        case ActionTypes.SET_WEEKLY_HOURS:
+            return Object.assign({}, {...state}, action.payload);
         default:
             return state;
     }

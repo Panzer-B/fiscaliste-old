@@ -18,3 +18,17 @@ export const selectPersonNetIncome = createSelector(
         return state.netIncome
     }
 );
+
+export const selectPersonHourlyRate = createSelector(
+    selectPerson,
+    (state: PersonState) => {
+        return state.hourlyRate
+    }
+);
+
+export const selectPersonWeeklyHours = createSelector(
+    selectPerson,
+    (state: PersonState) => {
+        return state.weeklyHours
+    }
+);
