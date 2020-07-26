@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
-import { SetGrossIncome } from "../../store/person.action";
+import { SetGrossIncome, SetHourlyRate } from "../../store/person.action";
 import { AppState } from "../../store/reducers";
 import { select, Store } from "@ngrx/store";
 import { combineLatest } from "rxjs";
 import { first, map } from "rxjs/operators";
-import { selectPersonNetIncome } from "../../store/person.selector";
+import { selectPersonHourlyRate, selectPersonNetIncome } from "../../store/person.selector";
 
 @Component({
     selector: 'app-true-cost',
@@ -35,6 +35,19 @@ export class TrueCostComponent implements OnInit {
             'numberOfHoursControl': this.numberOfHoursControl
         });
 
+        this._store.pipe(
+            select(selectPersonHourlyRate),
+            first()
+        ).subscribe((_hourlyRate) => {
+            console.log(`_hourlyRate`, _hourlyRate);
+            this.hourlyRateControl.setValue(_hourlyRate)
+        });
+
+        this.hourlyRateControl.valueChanges.subscribe((_value) => {
+            console.log(`_value`, _value);
+            this._store.dispatch(new SetHourlyRate({hourlyRate: _value}))
+        });
+
         // Set gross income.
         combineLatest(
             this.hourlyRateControl.valueChanges,
@@ -52,7 +65,6 @@ export class TrueCostComponent implements OnInit {
                 first(),
                 map((_value) => _value / 52 / _values.numberOfHoursControl)
             ).subscribe((_hourlyNetIncome) => {
-                console.log(`_netIncome`, _hourlyNetIncome);
                 this.fakeResult = Math.round((_values.costControl / _values.hourlyRateControl)*100)/100;
                 this.result = Math.round((_values.costControl / _hourlyNetIncome)*100)/100;
             });
