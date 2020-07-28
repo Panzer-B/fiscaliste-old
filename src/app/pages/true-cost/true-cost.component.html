@@ -8,13 +8,13 @@
 
     <br>
     <label>The amount of time you need to spend at work is :</label>
-    {{fakeResult}} hours
+<!--    {{fakeResult}} hours-->
+    <div class="hours">{{ result }} hours total.</div>
+
     <br>
-    Reality : <br>
-    {{result}} hours in a year.
-    <br>
-    {{result / 52}} hours a week.
-    <br>
-    Value of investments in 25 years with compound interest of 7% monthly
+    Value of investments in 25 years with compound interest of 7% calculated monthly :
+    <div class="compoundValue" *ngIf="compoundValue">
+        {{ compoundValue | currency}}
+    </div>
 
 </form>

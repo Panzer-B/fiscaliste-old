@@ -1,6 +1,7 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "./reducers";
 import { PersonState } from "./person.state";
+import { calculateTaxes } from "../core/taxes/income.calculator";
 
 export const selectPerson = (state: AppState) => {
     return state.person;
@@ -9,14 +10,14 @@ export const selectPerson = (state: AppState) => {
 export const selectPersonGrossIncome = createSelector(
     selectPerson,
     (state: PersonState) => {
-        return state.grossIncome
+        return state.weeklyHours * state.hourlyRate * 52;
     }
 );
 
 export const selectPersonNetIncome = createSelector(
-    selectPerson,
-    (state: PersonState) => {
-        return state.netIncome
+    selectPersonGrossIncome,
+    (_grossIncome: number) => {
+        return calculateTaxes(_grossIncome);
     }
 );
 
