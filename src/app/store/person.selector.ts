@@ -34,3 +34,10 @@ export const selectPersonWeeklyHours = createSelector(
         return state.weeklyHours
     }
 );
+
+export const selectPersonMaxRRSP = createSelector(
+    selectPersonGrossIncome,
+    (_grossIncome: number) => {
+        return _grossIncome / 100 * 18;
+    }
+);
