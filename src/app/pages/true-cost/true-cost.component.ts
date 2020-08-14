@@ -13,6 +13,7 @@ import {
 } from "../../store/person.selector";
 import { DebounceTime } from "../../app.config";
 import { calculateTaxes } from "../../core/taxes/income.calculator";
+import {compoundValueByMonths} from "../../store/helper";
 
 @Component({
     selector: 'app-true-cost',
@@ -29,6 +30,7 @@ export class TrueCostComponent implements OnInit {
 
     // params
     yearsOfInvestments = 25;
+    yearlyRate = 5;
     interest = 0.05;
 
     // results
@@ -92,8 +94,6 @@ export class TrueCostComponent implements OnInit {
 
                 const months = this.yearsOfInvestments * 12;
                 const monthlyRate = Math.round(this.interest / 12 * 100000) / 100000;
-                console.log(`monthlyRate`, monthlyRate);
-                let compoundValue = _value;
                 let compoundValueRRSP = _value;
                 let compoundAddedValue = _value;
                 let compoundAddedValueRRSP = _value;
@@ -104,8 +104,6 @@ export class TrueCostComponent implements OnInit {
                 let rrspYearlyInvestment = _value;
 
                 for (let i = 1; i <= months; i++) {
-                    // compound
-                    compoundValue = compoundValue * (1 + monthlyRate);
 
                     // RRSP
                     if (i % 12 === 0 && i !== 0) {
@@ -138,7 +136,7 @@ export class TrueCostComponent implements OnInit {
                         console.log(`compoundAddedValueRRSP * (7 / 100)`, compoundAddedValueRRSP * 0.07);
                     }
                 }
-                this.compoundValue = Math.round(compoundValue * 100) / 100;
+                this.compoundValue = compoundValueByMonths(_value, this.yearlyRate, months);
                 this.compoundAddedValue = Math.round(compoundAddedValue * 100) / 100;
                 this.compoundValueRRSP = Math.round(compoundValueRRSP * 100) / 100;
                 this.compoundAddedValueRRSP = Math.round(compoundAddedValueRRSP * 100) / 100;
