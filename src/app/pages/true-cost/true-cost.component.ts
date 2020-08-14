@@ -6,6 +6,7 @@ import { select, Store } from "@ngrx/store";
 import { combineLatest, race } from "rxjs";
 import { debounceTime, first, map } from "rxjs/operators";
 import {
+    personTaxReturnOnRRSP,
     selectPersonGrossIncome,
     selectPersonHourlyRate, selectPersonMaxRRSP,
     selectPersonNetIncome,
@@ -13,7 +14,12 @@ import {
 } from "../../store/person.selector";
 import { DebounceTime } from "../../app.config";
 import { calculateTaxes } from "../../core/taxes/income.calculator";
-import {compoundValueByMonths} from "../../store/helper";
+import {
+    compoundValueByMonths,
+    getCompoundAddedValue, getCompoundAddedValueRRSP,
+    getCompoundValueRRSP,
+    getTaxReturnOnRRSP
+} from "../../store/helper";
 
 @Component({
     selector: 'app-true-cost',
@@ -85,7 +91,8 @@ export class TrueCostComponent implements OnInit {
             .subscribe((_value: number) => {
                 const t0 = performance.now();
 
-                let grossIncome = 0;
+                let grossIncome: number;
+
                 this._store.pipe(
                     select(selectPersonGrossIncome)
                 ).subscribe((_grossIncome) => {
@@ -94,52 +101,11 @@ export class TrueCostComponent implements OnInit {
 
                 const months = this.yearsOfInvestments * 12;
                 const monthlyRate = Math.round(this.interest / 12 * 100000) / 100000;
-                let compoundValueRRSP = _value;
-                let compoundAddedValue = _value;
-                let compoundAddedValueRRSP = _value;
-                let rrspTaxReturn = 0;
-                let rrspInvestment = _value;
 
-                let rrspYearlyTaxReturn = 0;
-                let rrspYearlyInvestment = _value;
-
-                for (let i = 1; i <= months; i++) {
-
-                    // RRSP
-                    if (i % 12 === 0 && i !== 0) {
-                        rrspTaxReturn = this.getTaxReturnOnRRSP(grossIncome, rrspInvestment);
-                        rrspInvestment = rrspTaxReturn;
-
-                        compoundValueRRSP = (compoundValueRRSP + rrspTaxReturn) * (1 + monthlyRate);
-                    } else {
-                        compoundValueRRSP = compoundValueRRSP * (1 + monthlyRate);
-                    }
-
-                    // Yearly investment
-                    if (i % 12 === 0 && i !== 0) {
-                        compoundAddedValue = (compoundAddedValue + _value) * (1 + monthlyRate);
-                    } else {
-                        compoundAddedValue = compoundAddedValue * (1 + monthlyRate);
-                    }
-
-                    // Yearly investment RRSP
-                    if (i % 12 === 0 && i !== 0) {
-                        // RRSP
-                        rrspYearlyTaxReturn = this.getTaxReturnOnRRSP(grossIncome, rrspYearlyInvestment);
-                        rrspYearlyInvestment = rrspYearlyTaxReturn + _value;
-                        compoundAddedValueRRSP = (compoundAddedValueRRSP + _value + rrspYearlyTaxReturn) * (1 + monthlyRate);
-
-                    } else {
-                        compoundAddedValueRRSP = compoundAddedValueRRSP * (1 + monthlyRate);
-                    }
-                    if (i === months-1) {
-                        console.log(`compoundAddedValueRRSP * (7 / 100)`, compoundAddedValueRRSP * 0.07);
-                    }
-                }
-                this.compoundValue = compoundValueByMonths(_value, this.yearlyRate, months);
-                this.compoundAddedValue = Math.round(compoundAddedValue * 100) / 100;
-                this.compoundValueRRSP = Math.round(compoundValueRRSP * 100) / 100;
-                this.compoundAddedValueRRSP = Math.round(compoundAddedValueRRSP * 100) / 100;
+                this.compoundValue = compoundValueByMonths(_value, months, this.yearlyRate);
+                this.compoundAddedValue = getCompoundAddedValue(_value, months, this.yearlyRate);
+                this.compoundValueRRSP =getCompoundValueRRSP(grossIncome, _value, months, this.yearlyRate);
+                this.compoundAddedValueRRSP = getCompoundAddedValueRRSP(grossIncome, _value, months, this.yearlyRate);
 
 
                 const t1 = performance.now();
@@ -158,13 +124,5 @@ export class TrueCostComponent implements OnInit {
         });
 
         this.costControl.setValue(10000, {emitEvent: true});
-    }
-
-    private getTaxReturnOnRRSP(_grossIncome, _rrspInvestment) {
-        const netIncome = calculateTaxes(_grossIncome);
-        const maxRRSP = _grossIncome / 100 * 18;
-        const substract = _rrspInvestment >= maxRRSP ? maxRRSP : _rrspInvestment;
-        const trueIncome = calculateTaxes(_grossIncome - substract);
-        return Math.round((netIncome - trueIncome) * 100) / 100;
     }
 }
