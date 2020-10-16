@@ -1,140 +1,174 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-    "fiscaliste": {
-      "root": "",
-      "sourceRoot": "src",
-      "projectType": "application",
-      "prefix": "app",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/fiscaliste",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [],
-            "es5BrowserSupport": true
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+    "version": 1,
+    "projects": {
+        "fiscaliste": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "scss"
                 }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+            },
+            "root": "apps/fiscaliste",
+            "sourceRoot": "apps/fiscaliste/src",
+            "prefix": "fiscaliste",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/apps/fiscaliste",
+                        "index": "apps/fiscaliste/src/index.html",
+                        "main": "apps/fiscaliste/src/main.ts",
+                        "polyfills": "apps/fiscaliste/src/polyfills.ts",
+                        "tsConfig": "apps/fiscaliste/tsconfig.app.json",
+                        "aot": true,
+                        "assets": [
+                            "apps/fiscaliste/src/favicon.ico",
+                            "apps/fiscaliste/src/assets"
+                        ],
+                        "styles": ["apps/fiscaliste/src/styles.scss"],
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "apps/fiscaliste/src/environments/environment.ts",
+                                    "with": "apps/fiscaliste/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb",
+                                    "maximumError": "10kb"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "fiscaliste:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "fiscaliste:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "fiscaliste:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "apps/fiscaliste/tsconfig.app.json",
+                            "apps/fiscaliste/tsconfig.spec.json",
+                            "apps/fiscaliste/tsconfig.editor.json"
+                        ],
+                        "exclude": ["**/node_modules/**", "!apps/fiscaliste/**/*"]
+                    }
+                },
+                "test": {
+                    "builder": "@nrwl/jest:jest",
+                    "options": {
+                        "jestConfig": "apps/fiscaliste/jest.config.js",
+                        "passWithNoTests": true
+                    }
                 }
-              ]
             }
-          }
         },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "fiscaliste:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "fiscaliste:build:production"
+        "fiscaliste-e2e": {
+            "root": "apps/fiscaliste-e2e",
+            "sourceRoot": "apps/fiscaliste-e2e/src",
+            "projectType": "application",
+            "architect": {
+                "e2e": {
+                    "builder": "@nrwl/cypress:cypress",
+                    "options": {
+                        "cypressConfig": "apps/fiscaliste-e2e/cypress.json",
+                        "tsConfig": "apps/fiscaliste-e2e/tsconfig.e2e.json",
+                        "devServerTarget": "fiscaliste:serve"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "fiscaliste:serve:production"
+                        }
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": ["apps/fiscaliste-e2e/tsconfig.e2e.json"],
+                        "exclude": ["**/node_modules/**", "!apps/fiscaliste-e2e/**/*"]
+                    }
+                }
             }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "fiscaliste:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
-      }
     },
-    "fiscaliste-e2e": {
-      "root": "e2e/",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "fiscaliste:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "fiscaliste:serve:production"
+    "cli": {
+        "defaultCollection": "@nrwl/angular"
+    },
+    "schematics": {
+        "@nrwl/workspace": {
+            "library": {
+                "linter": "tslint"
             }
-          }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
+        "@nrwl/cypress": {
+            "cypress-project": {
+                "linter": "tslint"
+            }
+        },
+        "@nrwl/node": {
+            "application": {
+                "linter": "tslint"
+            },
+            "library": {
+                "linter": "tslint"
+            }
+        },
+        "@nrwl/nest": {
+            "application": {
+                "linter": "tslint"
+            },
+            "library": {
+                "linter": "tslint"
+            }
+        },
+        "@nrwl/express": {
+            "application": {
+                "linter": "tslint"
+            },
+            "library": {
+                "linter": "tslint"
+            }
+        },
+        "@nrwl/angular:application": {
+            "unitTestRunner": "jest",
+            "e2eTestRunner": "cypress"
+        },
+        "@nrwl/angular:library": {
+            "unitTestRunner": "jest"
         }
-      }
-    }
-  },
-  "defaultProject": "fiscaliste"
+    },
+    "defaultProject": "fiscaliste"
 }
