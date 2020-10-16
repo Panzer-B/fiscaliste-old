@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
+import {Form, FormControl, FormGroup} from "@angular/forms";
 import { SetGrossIncome, SetHourlyRate, SetWeeklyHours } from "../../store/person.action";
 import { AppState } from "../../store/reducers";
 import { select, Store } from "@ngrx/store";
-import { combineLatest, race } from "rxjs";
+import {combineLatest, Observable, race} from "rxjs";
 import { debounceTime, first, map } from "rxjs/operators";
 import {
     personTaxReturnOnRRSP,
-    selectPersonGrossIncome,
+    selectPersonGrossIncome, selectPersonHourlyNetIncome,
     selectPersonHourlyRate, selectPersonMaxRRSP,
     selectPersonNetIncome,
     selectPersonWeeklyHours
@@ -31,8 +31,7 @@ export class TrueCostComponent implements OnInit {
     // forms
     formGroup: FormGroup;
     costControl: FormControl;
-    hourlyRateControl: FormControl;
-    numberOfHoursControl: FormControl;
+    tipControl: FormControl;
 
     // params
     yearsOfInvestments = 25;
@@ -41,54 +40,48 @@ export class TrueCostComponent implements OnInit {
 
     // results
     fakeResult = 0;
+    tax: number;
+    isTipAdded: boolean;
+    realCost: number; // Cost with taxes & tip added.
     result = 0;
     compoundValue = 0;
     compoundValueRRSP = 0;
     compoundAddedValue = 0;
     compoundAddedValueRRSP = 0;
 
+    personHourlyHours$: Observable<number>;
+
     constructor(private _store: Store<AppState>) {
     }
 
     ngOnInit() {
+        this.personHourlyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
         this.costControl = new FormControl(null);
-        this.hourlyRateControl = new FormControl(null);
-        this.numberOfHoursControl = new FormControl(null);
+        this.tipControl = new FormControl(null);
 
         this.formGroup = new FormGroup({
             'costControl': this.costControl,
-            'hourlyRateControl': this.hourlyRateControl,
-            'numberOfHoursControl': this.numberOfHoursControl
+            'tipControl': this.tipControl
         });
 
-        this._store.pipe(
-            select(selectPersonHourlyRate),
-            first()
-        ).subscribe((_hourlyRate) => {
-            this.hourlyRateControl.setValue(_hourlyRate, {emitEvent: true})
-        });
-
-        this._store.pipe(
-            select(selectPersonWeeklyHours),
-            first()
-        ).subscribe((_weeklyHours) => {
-            console.log(`_weeklyHours`, _weeklyHours);
-            this.numberOfHoursControl.setValue(_weeklyHours)
-        });
-
-        this.hourlyRateControl.valueChanges.subscribe((_value: number) => {
-            this._store.dispatch(new SetHourlyRate({hourlyRate: _value}))
-        });
-
-        this.numberOfHoursControl.valueChanges.subscribe((_value: number) => {
-            this._store.dispatch(new SetWeeklyHours({weeklyHours: _value}))
-        });
-
-        this.costControl.valueChanges
+        this.formGroup.valueChanges
             .pipe(
-                debounceTime(1000),
+                debounceTime(1),
             )
-            .subscribe((_value: number) => {
+            .subscribe((changes) => {
+                console.log(changes);
+                let hourlyNetIncome;
+                const _value = changes.costControl;
+                this.tax = _value/100 * 15;
+                this.realCost = _value + this.tax;
+                if (this.tipControl.value === true) {
+                    this.realCost += this.tax;
+                }
+
+                this._store.pipe(select(selectPersonHourlyNetIncome, first())).subscribe((_hourlyNetIncome) => {
+                    this.result = Math.round((this.realCost / _hourlyNetIncome) * 100) / 100;
+                });
+
                 const t0 = performance.now();
 
                 let grossIncome: number;
@@ -102,27 +95,17 @@ export class TrueCostComponent implements OnInit {
                 const months = this.yearsOfInvestments * 12;
                 const monthlyRate = Math.round(this.interest / 12 * 100000) / 100000;
 
-                this.compoundValue = compoundValueByMonths(_value, months, this.yearlyRate);
-                this.compoundAddedValue = getCompoundAddedValue(_value, months, this.yearlyRate);
-                this.compoundValueRRSP =getCompoundValueRRSP(grossIncome, _value, months, this.yearlyRate);
-                this.compoundAddedValueRRSP = getCompoundAddedValueRRSP(grossIncome, _value, months, this.yearlyRate);
+                this.compoundValue = compoundValueByMonths(this.realCost, months, this.yearlyRate);
+                this.compoundAddedValue = getCompoundAddedValue(this.realCost, months, this.yearlyRate);
+                this.compoundValueRRSP =getCompoundValueRRSP(grossIncome, this.realCost, months, this.yearlyRate);
+                this.compoundAddedValueRRSP = getCompoundAddedValueRRSP(grossIncome, this.realCost, months, this.yearlyRate);
 
 
                 const t1 = performance.now();
                 console.log(`Call to doSomething took ${t1 - t0} milliseconds.`);
             });
 
-        combineLatest(
-            this._store.pipe(
-                select(selectPersonNetIncome),
-                map((_value) => _value / 52 / this.numberOfHoursControl.value)
-            ),
-            this.costControl.valueChanges
-        ).subscribe(([_hourlyNetIncome, _cost]) => {
-            this.fakeResult = Math.round((_cost / this.hourlyRateControl.value) * 100) / 100;
-            this.result = Math.round((_cost / _hourlyNetIncome) * 100) / 100;
-        });
 
-        this.costControl.setValue(10000, {emitEvent: true});
+        this.costControl.setValue(100, {emitEvent: true});
     }
 }

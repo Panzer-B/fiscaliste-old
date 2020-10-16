@@ -12,7 +12,7 @@ export const selectPersonGrossIncome = createSelector(
     (state: PersonState) => {
         return state.weeklyHours * state.hourlyRate * 52;
     }
-);
+);10
 
 export const selectPersonNetIncome = createSelector(
     selectPersonGrossIncome,
@@ -34,6 +34,14 @@ export const selectPersonWeeklyHours = createSelector(
         return state.weeklyHours
     }
 );
+
+export const selectPersonHourlyNetIncome = createSelector(
+    selectPersonNetIncome,
+    selectPersonWeeklyHours,
+    (_netIncome,  _weeklyHours) => {
+        return _netIncome / 52 / _weeklyHours;
+    }
+)
 
 export const selectPersonMaxRRSP = createSelector(
     selectPersonGrossIncome,
