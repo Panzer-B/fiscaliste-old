@@ -10,6 +10,7 @@ import { calculateTaxes } from "../taxes/income.calculator";
 })
 export class CalculatorService {
 
+    // TODO : replace by effects.
     constructor(private _store: Store<AppState>) {
         this._store
             .pipe(
