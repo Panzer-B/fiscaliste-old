@@ -28,12 +28,15 @@ export class TrueCostComponent implements OnInit {
     formGroup: FormGroup;
     costControl: FormControl;
     tipControl: FormControl;
+    taxControl: FormControl;
 
     // params
     yearsOfInvestments = 25;
     months: number;
     yearlyRate = 5;
     interest = 0.05;
+    tipRate = 0.15;
+    taxRate = 0.15;
 
     // results
     tax: number;
@@ -50,11 +53,13 @@ export class TrueCostComponent implements OnInit {
         this.months = this.yearsOfInvestments / 12;
         this.personHourlyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
         this.costControl = new FormControl(null);
+        this.taxControl = new FormControl(null);
         this.tipControl = new FormControl(null);
 
         this.formGroup = new FormGroup({
             'costControl': this.costControl,
-            'tipControl': this.tipControl
+            'tipControl': this.tipControl,
+            'taxControl': this.taxControl,
         });
 
         this._store.pipe(
@@ -70,10 +75,14 @@ export class TrueCostComponent implements OnInit {
             .subscribe((changes) => {
                 console.log(changes);
                 const _cost = changes.costControl;
-                this.tax = _cost / 100 * 15;
-                this.realCost = _cost + this.tax;
+                this.realCost = _cost;
+
                 if (this.tipControl.value === true) {
-                    this.realCost += this.tax;
+                    this.realCost += _cost * this.tipRate;
+                }
+
+                if (this.taxControl.value === true) {
+                    this.realCost += _cost * this.taxRate;
                 }
 
                 this._store.pipe(select(selectPersonHourlyNetIncome, first())).subscribe((_hourlyNetIncome) => {

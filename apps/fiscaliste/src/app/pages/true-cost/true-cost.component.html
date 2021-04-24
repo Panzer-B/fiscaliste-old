@@ -3,8 +3,8 @@
     <label>How much does it cost ?</label>
     <input [formControlName]="'costControl'" type="number">
     <br>
-    taxes : {{tax | currency}} <br>
-    Add 15% tip? {{tax | currency}}<input type="checkbox" formControlName="tipControl">
+    taxes :  <input type="checkbox" formControlName="taxControl"> + {{tax | currency}} <br>
+    Add 15% tip? <input type="checkbox" formControlName="tipControl"> + {{tax | currency}}
     <br>
     TOTAL : {{realCost | currency}}
     <br>
