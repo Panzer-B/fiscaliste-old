@@ -12,7 +12,6 @@
     <app-person-weekly-hours [formGroup]="formGroup"></app-person-weekly-hours>
     <br>
     <label>The amount of time you need to spend at work is :</label>
-<!--    {{fakeResult}} hours-->
     <div class="hours">{{ result }} hours total.</div>
     <div>{{result / (personHourlyHours$ | async) | number}} weeks</div>
 
