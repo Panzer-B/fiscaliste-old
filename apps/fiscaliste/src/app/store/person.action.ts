@@ -5,6 +5,7 @@ export enum ActionTypes {
     SET_NET_INCOME = 'SET_NET_INCOME',
     SET_HOURLY_RATE = 'SET_HOURLY_RATE',
     SET_WEEKLY_HOURS = 'SET_WEEKLY_HOURS',
+    SET_DAILY_COMMUTE = 'SET_DAILY_COMMUTE',
 }
 
 export class SetGrossIncome implements Action {
@@ -27,4 +28,9 @@ export class SetWeeklyHours implements Action {
     constructor(public payload: { weeklyHours: number }) {}
 }
 
-export type ActionsUnion = SetGrossIncome | SetNetIncome | SetWeeklyHours | SetHourlyRate;
+export class SetDailyCommute implements Action {
+    readonly type = ActionTypes.SET_DAILY_COMMUTE;
+    constructor(public payload: { dailyCommute: number }) {}
+}
+
+export type ActionsUnion = SetGrossIncome | SetNetIncome | SetWeeklyHours | SetHourlyRate | SetDailyCommute;

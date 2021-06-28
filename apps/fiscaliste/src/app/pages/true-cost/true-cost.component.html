@@ -5,14 +5,15 @@
     <br>
     Add taxes ?  <input type="checkbox" formControlName="taxControl"><ng-container *ngIf="taxControl.value"> + {{costControl.value * taxRate | currency}}</ng-container> <br>
     Add 15% tip? <input type="checkbox" formControlName="tipControl"><ng-container *ngIf="tipControl.value"> + {{costControl.value * tipRate | currency}}</ng-container>
-    <label>I make this payment <input [formControlName]="'paymentsPerYearControl'" type="number">  a year.</label>
+    <label>I make this payment <input [formControlName]="'paymentsPerYearControl'" type="number"> times a year.</label>
     <br>
     TOTAL : {{realCost | currency}}
     <br>
     <app-hourly-rate-income [formGroup]="formGroup"></app-hourly-rate-income>
     <app-person-weekly-hours [formGroup]="formGroup"></app-person-weekly-hours>
+    <fiscaliste-person-daily-commute [formGroup]="formGroup"></fiscaliste-person-daily-commute>
     <br>
-    <label>The amount of time you need to spend at work is :</label>
+    <label>The amount of time you need to spend for work is :</label>
     <div class="hours">{{ result }} hours total.</div>
     <div>{{result / (personHourlyHours$ | async) | number}} weeks</div>
 

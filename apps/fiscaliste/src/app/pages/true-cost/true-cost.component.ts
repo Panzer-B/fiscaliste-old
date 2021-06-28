@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {Form, FormControl, FormGroup} from "@angular/forms";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup} from "@angular/forms";
 import {AppState} from "../../store/reducers";
 import {select, Store} from "@ngrx/store";
 import {Observable} from "rxjs";
@@ -46,7 +46,7 @@ export class TrueCostComponent implements OnInit {
     personHourlyHours$: Observable<number>;
     grossIncome: number;
 
-    constructor(private _store: Store<AppState>) {
+    constructor(private _store: Store<AppState>, private _ref: ChangeDetectorRef) {
     }
 
     ngOnInit() {
@@ -92,9 +92,8 @@ export class TrueCostComponent implements OnInit {
                     this.result = Math.round((this.realCost / _hourlyNetIncome) * 100) / 100;
                 });
 
-
+                this._ref.detectChanges();
             });
-
 
         this.costControl.setValue(100, {emitEvent: true});
     }

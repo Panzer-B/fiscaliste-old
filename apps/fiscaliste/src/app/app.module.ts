@@ -14,6 +14,7 @@ import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { HourlyRateIncomeComponent } from './controls/hourly-rate-income/hourly-rate-income.component';
 import { PersonWeeklyHoursComponent } from './controls/person-weekly-hours/person-weekly-hours.component';
 import {BrowserModule} from "@angular/platform-browser";
+import { PersonDailyCommuteComponent } from './controls/person-daily-commute/person-daily-commute.component';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import {BrowserModule} from "@angular/platform-browser";
         TaxCalculatorComponent,
         HourlyRateIncomeComponent,
         PersonWeeklyHoursComponent,
+        PersonDailyCommuteComponent,
     ],
     imports: [
         BrowserModule,
