@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {Form, FormControl, FormGroup} from "@angular/forms";
 import {AppState} from "../../store/reducers";
 import {select, Store} from "@ngrx/store";
 import {Observable} from "rxjs";
@@ -29,12 +29,12 @@ export class TrueCostComponent implements OnInit {
     costControl: FormControl;
     tipControl: FormControl;
     taxControl: FormControl;
+    paymentsPerYearControl: FormControl;
 
     // params
-    yearsOfInvestments = 25;
+    yearsOfInvestments = 40;
     months: number;
-    yearlyRate = 5;
-    interest = 0.05;
+    yearlyRate = 0.05;
     tipRate = 0.15;
     taxRate = 0.15;
 
@@ -50,8 +50,9 @@ export class TrueCostComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.months = this.yearsOfInvestments / 12;
+        this.months = this.yearsOfInvestments * 12;
         this.personHourlyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
+        this.paymentsPerYearControl = new FormControl(1);
         this.costControl = new FormControl(null);
         this.taxControl = new FormControl(null);
         this.tipControl = new FormControl(null);
@@ -60,6 +61,7 @@ export class TrueCostComponent implements OnInit {
             'costControl': this.costControl,
             'tipControl': this.tipControl,
             'taxControl': this.taxControl,
+            'paymentsPerYearControl': this.paymentsPerYearControl
         });
 
         this._store.pipe(
@@ -75,14 +77,15 @@ export class TrueCostComponent implements OnInit {
             .subscribe((changes) => {
                 console.log(changes);
                 const _cost = changes.costControl;
-                this.realCost = _cost;
+                const paymentsPerYear = changes.paymentsPerYearControl;
+                this.realCost = _cost * paymentsPerYear;
 
                 if (this.tipControl.value === true) {
-                    this.realCost += _cost * this.tipRate;
+                    this.realCost += _cost * this.tipRate * paymentsPerYear;
                 }
 
                 if (this.taxControl.value === true) {
-                    this.realCost += _cost * this.taxRate;
+                    this.realCost += _cost * this.taxRate * paymentsPerYear;
                 }
 
                 this._store.pipe(select(selectPersonHourlyNetIncome, first())).subscribe((_hourlyNetIncome) => {
@@ -94,6 +97,15 @@ export class TrueCostComponent implements OnInit {
 
 
         this.costControl.setValue(100, {emitEvent: true});
+    }
+
+    get compoundValue(): number {
+        console.log(`this.realCost`, this.realCost);
+        console.log(`this.months`, this.months);
+        console.log(`this.yearlyRate`, this.yearlyRate);
+        const total = compoundValueByMonths(this.realCost, this.months, this.yearlyRate)
+        console.log(`total`, total);
+        return total;
     }
 
     get compoundAddedValueRRSP() {
@@ -108,7 +120,5 @@ export class TrueCostComponent implements OnInit {
         return getCompoundAddedValue(this.realCost, this.months, this.yearlyRate);
     }
 
-    get compoundValue() {
-        return compoundValueByMonths(this.realCost, this.months, this.yearlyRate)
-    }
+
 }

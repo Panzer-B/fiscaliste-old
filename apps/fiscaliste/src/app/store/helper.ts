@@ -1,12 +1,14 @@
 import {calculateTaxes} from "../core/taxes/income.calculator";
 
+/**
+ * compoundValueByMonths (Verified)
+ * @param _value
+ * @param _months
+ * @param _yearlyRate
+ */
 export const compoundValueByMonths = (_value, _months, _yearlyRate) => {
     const monthlyRate = getMonthlyRate(_yearlyRate);
-    let compoundValue = _value;
-
-    for (let i = 1; i <= _months; i++) {
-        compoundValue = compoundValue * (1 + monthlyRate);
-    }
+    const compoundValue = _value*Math.pow(1+monthlyRate, _months);
     return Math.round(compoundValue * 100) / 100;
 }
 
@@ -24,19 +26,6 @@ export const getCompoundAddedValue = (_value: number, _months: number, _yearlyRa
     }
     return Math.round(compoundValue * 100) / 100;
 };
-
-
-export const getTaxReturnOnRRSP = (_grossIncome: number, _rrspInvestment: number) => {
-    const maxRRSP = getMaxRRSPContribution(_grossIncome);
-    const subtract = _rrspInvestment >= maxRRSP ? maxRRSP : _rrspInvestment;
-    const trueIncome = calculateTaxes(_grossIncome - subtract);
-    const netIncome = calculateTaxes(_grossIncome);
-    return Math.round((netIncome - trueIncome) * 100) / 100;
-}
-
-export const getMaxRRSPContribution = (_grossIncome) => {
-    return _grossIncome / 100 * 18;
-}
 
 export const getCompoundValueRRSP = (_grossIncome: number, _value: number, _months: number, _yearlyRate: number): number => {
     const monthlyRate = getMonthlyRate(_yearlyRate);
@@ -80,6 +69,37 @@ export const getCompoundAddedValueRRSP = (_grossIncome: number, _value: number, 
     return Math.round(compoundValueRRSP * 100) / 100;
 }
 
-export const getMonthlyRate = (_yearlyRate): number => {
-    return Math.round(_yearlyRate / 100 / 12 * 100000) / 100000;
+// ===================================
+// Private functions
+// ==================================
+
+/**
+ * getMonthlyRate
+ * @param yearlyRate
+ */
+export const getMonthlyRate = (yearlyRate): number => {
+    return Math.round(yearlyRate / 12 * 1000000) / 1000000;
 };
+
+/**
+ * getTaxReturnOnRRSP
+ * @param grossIncome
+ * @param rrspInvestment
+ */
+export const getTaxReturnOnRRSP = (grossIncome: number, rrspInvestment: number) => {
+    const maxRRSP = getMaxRRSPContribution(grossIncome);
+    const subtract = rrspInvestment >= maxRRSP ? maxRRSP : rrspInvestment;
+    const trueIncome = calculateTaxes(grossIncome - subtract);
+    const netIncome = calculateTaxes(grossIncome);
+    return Math.round((netIncome - trueIncome) * 100) / 100;
+}
+
+/**
+ * getMaxRRSPContribution
+ * @param grossIncome
+ *
+ * should return 18% of grossIncome
+ */
+export const getMaxRRSPContribution = (grossIncome: number) => {
+    return grossIncome / 100 * 18;
+}

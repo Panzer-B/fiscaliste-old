@@ -3,8 +3,9 @@
     <label>How much does it cost ?</label>
     <input [formControlName]="'costControl'" type="number">
     <br>
-    taxes :  <input type="checkbox" formControlName="taxControl"> + {{tax | currency}} <br>
-    Add 15% tip? <input type="checkbox" formControlName="tipControl"> + {{tax | currency}}
+    Add taxes ?  <input type="checkbox" formControlName="taxControl"><ng-container *ngIf="taxControl.value"> + {{costControl.value * taxRate | currency}}</ng-container> <br>
+    Add 15% tip? <input type="checkbox" formControlName="tipControl"><ng-container *ngIf="tipControl.value"> + {{costControl.value * tipRate | currency}}</ng-container>
+    <label>I make this payment <input [formControlName]="'paymentsPerYearControl'" type="number">  a year.</label>
     <br>
     TOTAL : {{realCost | currency}}
     <br>
@@ -16,27 +17,28 @@
     <div>{{result / (personHourlyHours$ | async) | number}} weeks</div>
 
     <br>
-    Value of investment in {{yearsOfInvestments}} years with compound interest of 7% calculated monthly :
+    Value of {{realCost | currency}} in {{yearsOfInvestments}} years with compound interest of 7% calculated monthly :
     <div class="compoundValue" *ngIf="compoundValue">
         {{ compoundValue | currency}}
     </div>
 
     <br>
-    Value of RRSP investment in {{yearsOfInvestments}} years with compound interest of 7% calculated monthly :
-    <div class="compoundValueRRSP" *ngIf="compoundValue">
-        {{ compoundValueRRSP | currency}}
-    </div>
+<!--    TODO : REVISER-->
+<!--    Value of RRSP investment in {{yearsOfInvestments}} years with compound interest of 7% calculated monthly :-->
+<!--    <div class="compoundValueRRSP" *ngIf="compoundValue">-->
+<!--        {{ compoundValueRRSP | currency}}-->
+<!--    </div>-->
 
-    <br>
-    Value if you make the same investment yearly for the next {{yearsOfInvestments}} years with a compound interest of 7% calculated monthly:
-    <div class="compoundValue" *ngIf="compoundValue">
-        {{ compoundAddedValue | currency}}
-    </div>
+<!--    <br>-->
+<!--    Value if you make the same investment yearly for the next {{yearsOfInvestments}} years with a compound interest of 7% calculated monthly:-->
+<!--    <div class="compoundValue" *ngIf="compoundValue">-->
+<!--        {{ compoundAddedValue | currency}}-->
+<!--    </div>-->
 
-    <br>
-    Value if you make the same investment yearly  in an RRSP for the next {{yearsOfInvestments}} years with a compound interest of 7% calculated monthly:
-    <div class="compoundValueRRSP" *ngIf="compoundValue">
-        {{ compoundAddedValueRRSP | currency}}
-    </div>
+<!--    <br>-->
+<!--    Value if you make the same investment yearly  in an RRSP for the next {{yearsOfInvestments}} years with a compound interest of 7% calculated monthly:-->
+<!--    <div class="compoundValueRRSP" *ngIf="compoundValue">-->
+<!--        {{ compoundAddedValueRRSP | currency}}-->
+<!--    </div>-->
 
 </form>
