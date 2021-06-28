@@ -7,7 +7,7 @@ import {AppState} from "../../store/reducers";
 import {SetDailyCommute} from "../../store/person.action";
 
 @Component({
-    selector: 'fiscaliste-person-daily-commute',
+    selector: 'app-person-daily-commute',
     templateUrl: './person-daily-commute.component.html',
     styleUrls: ['./person-daily-commute.component.scss']
 })

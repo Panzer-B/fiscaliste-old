@@ -32,9 +32,9 @@ export class TrueCostComponent implements OnInit {
     paymentsPerYearControl: FormControl;
 
     // params
-    yearsOfInvestments = 40;
+    yearsOfInvestments = 25;
     months: number;
-    yearlyRate = 0.05;
+    yearlyRate = 0.07;
     tipRate = 0.15;
     taxRate = 0.15;
 
@@ -43,7 +43,7 @@ export class TrueCostComponent implements OnInit {
     realCost: number; // Cost with taxes & tip added.
     result = 0;
 
-    personHourlyHours$: Observable<number>;
+    personWeeklyHours$: Observable<number>;
     grossIncome: number;
 
     constructor(private _store: Store<AppState>, private _ref: ChangeDetectorRef) {
@@ -51,7 +51,7 @@ export class TrueCostComponent implements OnInit {
 
     ngOnInit() {
         this.months = this.yearsOfInvestments * 12;
-        this.personHourlyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
+        this.personWeeklyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
         this.paymentsPerYearControl = new FormControl(1);
         this.costControl = new FormControl(null);
         this.taxControl = new FormControl(null);

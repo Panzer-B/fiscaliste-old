@@ -1,4 +1,4 @@
-<p>The true cost of things.</p>
+<p>Combien ça coûte?</p>
 <form [formGroup]="formGroup">
     <label>How much does it cost ?</label>
     <input [formControlName]="'costControl'" type="number">
@@ -9,13 +9,13 @@
     <br>
     TOTAL : {{realCost | currency}}
     <br>
-    <app-hourly-rate-income [formGroup]="formGroup"></app-hourly-rate-income>
+    <app-person-hourly-rate-income [formGroup]="formGroup"></app-person-hourly-rate-income>
     <app-person-weekly-hours [formGroup]="formGroup"></app-person-weekly-hours>
-    <fiscaliste-person-daily-commute [formGroup]="formGroup"></fiscaliste-person-daily-commute>
+    <app-person-daily-commute [formGroup]="formGroup"></app-person-daily-commute>
     <br>
     <label>The amount of time you need to spend for work is :</label>
     <div class="hours">{{ result }} hours total.</div>
-    <div>{{result / (personHourlyHours$ | async) | number}} weeks</div>
+    <div>{{result / (personWeeklyHours$ | async) | number}} weeks</div>
 
     <br>
     Value of {{realCost | currency}} in {{yearsOfInvestments}} years with compound interest of 7% calculated monthly :

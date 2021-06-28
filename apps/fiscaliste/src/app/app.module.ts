@@ -11,7 +11,7 @@ import { CalculatorService } from "./core/services/calculator.service";
 import { TrueCostComponent } from './pages/true-cost/true-cost.component';
 import { TaxCalculatorComponent } from './pages/tax-calculator/tax-calculator.component';
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { HourlyRateIncomeComponent } from './controls/hourly-rate-income/hourly-rate-income.component';
+import { PersonHourlyRateIncomeComponent } from './controls/person-hourly-rate-income/person-hourly-rate-income.component';
 import { PersonWeeklyHoursComponent } from './controls/person-weekly-hours/person-weekly-hours.component';
 import {BrowserModule} from "@angular/platform-browser";
 import { PersonDailyCommuteComponent } from './controls/person-daily-commute/person-daily-commute.component';
@@ -24,7 +24,7 @@ import { PersonDailyCommuteComponent } from './controls/person-daily-commute/per
         IncomeJobComponent,
         TrueCostComponent,
         TaxCalculatorComponent,
-        HourlyRateIncomeComponent,
+        PersonHourlyRateIncomeComponent,
         PersonWeeklyHoursComponent,
         PersonDailyCommuteComponent,
     ],

@@ -7,11 +7,11 @@ import {first} from "rxjs/operators";
 import {SetHourlyRate} from "../../store/person.action";
 
 @Component({
-    selector: 'app-hourly-rate-income',
-    templateUrl: './hourly-rate-income.component.html',
-    styleUrls: ['./hourly-rate-income.component.scss']
+    selector: 'app-person-hourly-rate-income',
+    templateUrl: './person-hourly-rate-income.component.html',
+    styleUrls: ['./person-hourly-rate-income.component.scss']
 })
-export class HourlyRateIncomeComponent implements OnInit {
+export class PersonHourlyRateIncomeComponent implements OnInit {
     @Input() formGroup: FormGroup;
     hourlyRateControl: FormControl;
 
