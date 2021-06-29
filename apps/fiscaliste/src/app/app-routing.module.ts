@@ -4,6 +4,7 @@ import { TaxCalculatorComponent } from "./pages/tax-calculator/tax-calculator.co
 import { TrueCostComponent } from "./pages/true-cost/true-cost.component";
 
 const routes: Routes = [
+    { path: '', pathMatch: 'prefix', redirectTo: 'true-cost'},
     { path: 'tax-calculator', component: TaxCalculatorComponent },
     { path: 'true-cost', component: TrueCostComponent }
 ];
