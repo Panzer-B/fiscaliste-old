@@ -1,30 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import {Form, FormControl, FormGroup} from "@angular/forms";
-import { SetGrossIncome, SetHourlyRate, SetWeeklyHours } from "../../store/person.action";
-import { AppState } from "../../store/reducers";
-import { select, Store } from "@ngrx/store";
-import {combineLatest, Observable, race} from "rxjs";
-import { debounceTime, first, map } from "rxjs/operators";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup} from "@angular/forms";
+import {AppState} from "../../store/reducers";
+import {select, Store} from "@ngrx/store";
+import {Observable} from "rxjs";
+import {debounceTime, first} from "rxjs/operators";
 import {
-    personTaxReturnOnRRSP,
-    selectPersonGrossIncome, selectPersonHourlyNetIncome,
-    selectPersonHourlyRate, selectPersonMaxRRSP,
-    selectPersonNetIncome,
+    selectPersonGrossIncome,
+    selectPersonHourlyNetIncome,
     selectPersonWeeklyHours
 } from "../../store/person.selector";
-import { DebounceTime } from "../../app.config";
-import { calculateTaxes } from "../../core/taxes/income.calculator";
 import {
     compoundValueByMonths,
-    getCompoundAddedValue, getCompoundAddedValueRRSP,
+    getCompoundAddedValue,
+    getCompoundAddedValueRRSP,
     getCompoundValueRRSP,
-    getTaxReturnOnRRSP
 } from "../../store/helper";
 
 @Component({
     selector: 'app-true-cost',
     templateUrl: './true-cost.component.html',
-    styleUrls: ['./true-cost.component.scss']
+    styleUrls: ['./true-cost.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TrueCostComponent implements OnInit {
 
@@ -32,36 +28,46 @@ export class TrueCostComponent implements OnInit {
     formGroup: FormGroup;
     costControl: FormControl;
     tipControl: FormControl;
+    taxControl: FormControl;
+    paymentsPerYearControl: FormControl;
 
     // params
     yearsOfInvestments = 25;
-    yearlyRate = 5;
-    interest = 0.05;
+    months: number;
+    yearlyRate = 0.07;
+    tipRate = 0.15;
+    taxRate = 0.15;
 
     // results
-    fakeResult = 0;
     tax: number;
-    isTipAdded: boolean;
     realCost: number; // Cost with taxes & tip added.
     result = 0;
-    compoundValue = 0;
-    compoundValueRRSP = 0;
-    compoundAddedValue = 0;
-    compoundAddedValueRRSP = 0;
 
-    personHourlyHours$: Observable<number>;
+    personWeeklyHours$: Observable<number>;
+    grossIncome: number;
 
-    constructor(private _store: Store<AppState>) {
+    constructor(private _store: Store<AppState>, private _ref: ChangeDetectorRef) {
     }
 
     ngOnInit() {
-        this.personHourlyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
+        this.months = this.yearsOfInvestments * 12;
+        this.personWeeklyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
+        this.paymentsPerYearControl = new FormControl(1);
         this.costControl = new FormControl(null);
+        this.taxControl = new FormControl(null);
         this.tipControl = new FormControl(null);
 
         this.formGroup = new FormGroup({
             'costControl': this.costControl,
-            'tipControl': this.tipControl
+            'tipControl': this.tipControl,
+            'taxControl': this.taxControl,
+            'paymentsPerYearControl': this.paymentsPerYearControl
+        });
+
+        this._store.pipe(
+            select(selectPersonGrossIncome)
+        ).subscribe((grossIncome) => {
+            this.grossIncome = grossIncome;
         });
 
         this.formGroup.valueChanges
@@ -70,42 +76,48 @@ export class TrueCostComponent implements OnInit {
             )
             .subscribe((changes) => {
                 console.log(changes);
-                let hourlyNetIncome;
-                const _value = changes.costControl;
-                this.tax = _value/100 * 15;
-                this.realCost = _value + this.tax;
+                const _cost = changes.costControl;
+                const paymentsPerYear = changes.paymentsPerYearControl;
+                this.realCost = _cost * paymentsPerYear;
+
                 if (this.tipControl.value === true) {
-                    this.realCost += this.tax;
+                    this.realCost += _cost * this.tipRate * paymentsPerYear;
+                }
+
+                if (this.taxControl.value === true) {
+                    this.realCost += _cost * this.taxRate * paymentsPerYear;
                 }
 
                 this._store.pipe(select(selectPersonHourlyNetIncome, first())).subscribe((_hourlyNetIncome) => {
                     this.result = Math.round((this.realCost / _hourlyNetIncome) * 100) / 100;
                 });
 
-                const t0 = performance.now();
-
-                let grossIncome: number;
-
-                this._store.pipe(
-                    select(selectPersonGrossIncome)
-                ).subscribe((_grossIncome) => {
-                    grossIncome = _grossIncome;
-                });
-
-                const months = this.yearsOfInvestments * 12;
-                const monthlyRate = Math.round(this.interest / 12 * 100000) / 100000;
-
-                this.compoundValue = compoundValueByMonths(this.realCost, months, this.yearlyRate);
-                this.compoundAddedValue = getCompoundAddedValue(this.realCost, months, this.yearlyRate);
-                this.compoundValueRRSP =getCompoundValueRRSP(grossIncome, this.realCost, months, this.yearlyRate);
-                this.compoundAddedValueRRSP = getCompoundAddedValueRRSP(grossIncome, this.realCost, months, this.yearlyRate);
-
-
-                const t1 = performance.now();
-                console.log(`Call to doSomething took ${t1 - t0} milliseconds.`);
+                this._ref.detectChanges();
             });
-
 
         this.costControl.setValue(100, {emitEvent: true});
     }
+
+    get compoundValue(): number {
+        console.log(`this.realCost`, this.realCost);
+        console.log(`this.months`, this.months);
+        console.log(`this.yearlyRate`, this.yearlyRate);
+        const total = compoundValueByMonths(this.realCost, this.months, this.yearlyRate)
+        console.log(`total`, total);
+        return total;
+    }
+
+    get compoundAddedValueRRSP() {
+        return getCompoundAddedValueRRSP(this.grossIncome, this.realCost, this.months, this.yearlyRate);
+    }
+
+    get compoundValueRRSP() {
+        return getCompoundValueRRSP(this.grossIncome, this.realCost, this.months, this.yearlyRate);
+    }
+
+    get compoundAddedValue() {
+        return getCompoundAddedValue(this.realCost, this.months, this.yearlyRate);
+    }
+
+
 }

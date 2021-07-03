@@ -7,14 +7,19 @@ label{
 }
 
 .hours{
-    font-size: 2rem;
-    color: darkblue;
+    font-size: 32px;
+    color: #dd69fc;
+    background: #1f1f1f;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .compoundValue {
-    font-size: 2rem;
+    font-size: 64px;
     font-weight: bold;
-    color: brown;
+    color: #ce0000;
 }
 
 .compoundValueRRSP {

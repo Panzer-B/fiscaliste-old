@@ -3,4 +3,5 @@ export interface PersonState {
     netIncome?: number;
     hourlyRate?: number
     weeklyHours?: number;
+    dailyCommute?: number;
 }

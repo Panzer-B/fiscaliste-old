@@ -35,13 +35,29 @@ export const selectPersonWeeklyHours = createSelector(
     }
 );
 
+export const selectPersonDailyCommute = createSelector(
+    selectPerson,
+    (state: PersonState) => {
+        return state.dailyCommute || 0;
+    }
+)
+
+export const selectPersonWeeklyCommute = createSelector(
+    selectPersonDailyCommute,
+    (dailyCommute: number) => {
+        return dailyCommute * 5;
+    }
+);
+
 export const selectPersonHourlyNetIncome = createSelector(
     selectPersonNetIncome,
     selectPersonWeeklyHours,
-    (_netIncome,  _weeklyHours) => {
-        return _netIncome / 52 / _weeklyHours;
+    selectPersonWeeklyCommute,
+    (netIncome: number, weeklyHours: number, weeklyCommute: number) => {
+        return netIncome / 52 / (weeklyHours + weeklyCommute);
     }
 )
+
 
 export const selectPersonMaxRRSP = createSelector(
     selectPersonGrossIncome,
