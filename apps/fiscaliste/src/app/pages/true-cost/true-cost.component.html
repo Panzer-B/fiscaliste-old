@@ -2,9 +2,26 @@
 <form [formGroup]="formGroup">
     <label>The price is <input [formControlName]="'costControl'" type="number">$</label>
     <br>
-    <label>Add taxes ? </label><input type="checkbox" formControlName="taxControl"><ng-container *ngIf="taxControl.value"> + {{costControl.value * taxRate | currency}}</ng-container> <br>
-    <label>Add 15% tip? </label><input type="checkbox" formControlName="tipControl"><ng-container *ngIf="tipControl.value"> + {{costControl.value * tipRate | currency}}</ng-container>
-    <label>I make this payment <input [formControlName]="'paymentsPerYearControl'" type="number"> times a year.</label>
+    <label class="checkbox-container">Add taxes?
+        <input type="checkbox" formControlName="taxControl">
+        <span class="checkmark"></span>
+    </label>
+    <ng-container *ngIf="taxControl.value"> + {{costControl.value * taxRate | currency}}</ng-container><br>
+
+    <label class="checkbox-container">Add 15% tip?
+        <input type="checkbox" formControlName="tipControl">
+        <span class="checkmark"></span>
+    </label>
+    <ng-container *ngIf="tipControl.value"> + {{costControl.value * tipRate | currency}}</ng-container><br>
+
+    <label>I make this payment <input [formControlName]="'paymentsFrequency'" type="number"> times a
+        <select [formControlName]="'frequencyControl'">
+            <option value="1">year</option>
+            <option value="12">month</option>
+            <option value="52">week</option>
+            <option value="365">day</option>
+        </select>.
+    </label>
     <br>
     <p class="strong total">TOTAL : {{realCost | currency}}</p>
     <br>

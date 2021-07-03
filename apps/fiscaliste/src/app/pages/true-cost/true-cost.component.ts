@@ -29,7 +29,8 @@ export class TrueCostComponent implements OnInit {
     costControl: FormControl;
     tipControl: FormControl;
     taxControl: FormControl;
-    paymentsPerYearControl: FormControl;
+    paymentsFrequency: FormControl;
+    frequencyControl: FormControl;
 
     // params
     yearsOfInvestments = 25;
@@ -52,16 +53,18 @@ export class TrueCostComponent implements OnInit {
     ngOnInit() {
         this.months = this.yearsOfInvestments * 12;
         this.personWeeklyHours$ = this._store.pipe(select(selectPersonWeeklyHours));
-        this.paymentsPerYearControl = new FormControl(1);
+        this.paymentsFrequency = new FormControl(1);
         this.costControl = new FormControl(null);
         this.taxControl = new FormControl(null);
         this.tipControl = new FormControl(null);
+        this.frequencyControl = new FormControl(1);
 
         this.formGroup = new FormGroup({
             'costControl': this.costControl,
             'tipControl': this.tipControl,
             'taxControl': this.taxControl,
-            'paymentsPerYearControl': this.paymentsPerYearControl
+            'paymentsFrequency': this.paymentsFrequency,
+            'frequencyControl': this.frequencyControl
         });
 
         this._store.pipe(
@@ -77,16 +80,19 @@ export class TrueCostComponent implements OnInit {
             .subscribe((changes) => {
                 console.log(changes);
                 const _cost = changes.costControl;
-                const paymentsPerYear = changes.paymentsPerYearControl;
-                this.realCost = _cost * paymentsPerYear;
+                const paymentsFrequency = changes.paymentsFrequency;
+                let freqMultiplier = changes.frequencyControl;
+                this.realCost = _cost;
 
                 if (this.tipControl.value === true) {
-                    this.realCost += _cost * this.tipRate * paymentsPerYear;
+                    this.realCost += _cost * this.tipRate;
                 }
 
                 if (this.taxControl.value === true) {
-                    this.realCost += _cost * this.taxRate * paymentsPerYear;
+                    this.realCost += _cost * this.taxRate;
                 }
+
+                this.realCost = this.realCost * paymentsFrequency * freqMultiplier;
 
                 this._store.pipe(select(selectPersonHourlyNetIncome, first())).subscribe((_hourlyNetIncome) => {
                     this.result = Math.round((this.realCost / _hourlyNetIncome) * 100) / 100;
