@@ -1,2 +1,17 @@
-<app-income></app-income>
-<app-total-net></app-total-net>
+tax calculator
+<form [formGroup]="formGroup">
+    <label>impôts payés au provincial en 2020:</label><br><input [formControlName]="'taxControl'"><br>
+    <button>Calculer</button>
+    <br>
+    <div class="calculator">
+        salaire annuel du gouverneur général du québec:<br>
+        <div class="total total__pay">114 000 $</div>
+        Votre contribution:
+        <div class="total total__tax" [ngStyle]="{'width': taxWidth+'px'}">{{taxControl.value}} $</div>
+
+    </div>
+    <div class="conclusion">
+        <img src="https://www.droit-inc.com/image15267" width="200">
+        Continuez votre beau travail
+    </div>
+</form>

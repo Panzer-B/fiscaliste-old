@@ -1,0 +1,32 @@
+form{
+    width:800px;
+    margin:auto;
+}
+
+.calculator{
+    text-align: left;
+}
+
+.total{
+    height:48px;
+    color:white;
+    text-align: right;
+    font-size:36px;
+}
+
+.total__pay{
+    width:800px;
+    background: #2196F3;
+}
+
+.conclusion{
+    margin: auto;
+    width:500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.total__tax{
+    background: #2196F3;
+}
